@@ -13,7 +13,35 @@
     <link href="/scripts/bootstrap/dist/css/bootstrap.min.css" rel="stylesheet">
 
     <script src="/socket.io/socket.io.js"></script>
-    
+    <script>
+      // Speed up calls to hasOwnProperty
+      var hasOwnProperty = Object.prototype.hasOwnProperty;
+
+      function isEmpty(obj) {
+
+          // null and undefined are "empty"
+          if (obj == null) return true;
+
+          // Assume if it has a length property with a non-zero value
+          // that that property is correct.
+          if (obj.length > 0)    return false;
+          if (obj.length === 0)  return true;
+
+          // If it isn't an object at this point
+          // it is empty, but it can't be anything *but* empty
+          // Is it empty?  Depends on your application.
+          if (typeof obj !== "object") return true;
+
+          // Otherwise, does it have any properties of its own?
+          // Note that this doesn't handle
+          // toString and valueOf enumeration bugs in IE < 9
+          for (var key in obj) {
+              if (hasOwnProperty.call(obj, key)) return false;
+          }
+
+          return true;
+      }
+    </script>
     <script>
         var socket = io();
         var _arrSignalQuality=[];
@@ -26,9 +54,14 @@
 
         socket.on('cpu', function(cpu) {
           console.log(cpu[0]);
-          lineChartCpu.data.datasets[0].data.shift(); //elimino il primo elemento del dataset
-          lineChartCpu.data.datasets[0].data.push(cpu[0]);
-          lineChartCpu.update();
+          if(!isEmpty(lineChartCpu.data.datasets[0])){
+            //lineChartCpu.data.datasets[0].data.shift(); //elimino il primo elemento del dataset
+            //lineChartCpu.data.datasets[0].data.push(cpu[0]);
+            //lineChartCpu.update();
+          }
+          else{
+            console.log('obj null');
+          }
         });
         
 
@@ -50,6 +83,37 @@
     <script src="/scripts/chart.js/dist/Chart.min.js"></script>
 
 <!-- CPU Chart -->
+
+
+
+        <div class="col-md-4 col-sm-4 col-xs-12">
+              <div class="x_panel tile fixed_height_320 overflow_hidden">
+                <div class="x_title">
+                  <h2>Device Usage</h2>
+                  <ul class="nav navbar-right panel_toolbox">
+                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
+                    </li>
+                    <li class="dropdown">
+                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
+                      <ul class="dropdown-menu" role="menu">
+                        <li><a href="#">Settings 1</a>
+                        </li>
+                        <li><a href="#">Settings 2</a>
+                        </li>
+                      </ul>
+                    </li>
+                    <li><a class="close-link"><i class="fa fa-close"></i></a>
+                    </li>
+                  </ul>
+                  <div class="clearfix"></div>
+                </div>
+                <div class="x_content">
+                  <h4>Cpu</h4>
+                  <canvas id="lineChartCpu"></canvas>
+                </div>
+              </div>
+            </div>
+
     <script>
       
       var initDataCpu=[];
@@ -58,6 +122,8 @@
         initDataCpu.push(0);
         labelDataCpu.push(i+1);
       }
+      console.log(initDataCpu);
+
       //["1", "2", "3", "4", "5", "6", "7","8","9","10"]
       //[0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
       var config = {
@@ -92,36 +158,8 @@
           };
           var ctxCpu = document.getElementById("lineChartCpu");
           var lineChartCpu = new Chart(ctxCpu, config);
+
     </script>
-
-
-        <div class="col-md-4 col-sm-4 col-xs-12">
-              <div class="x_panel tile fixed_height_320 overflow_hidden">
-                <div class="x_title">
-                  <h2>Device Usage</h2>
-                  <ul class="nav navbar-right panel_toolbox">
-                    <li><a class="collapse-link"><i class="fa fa-chevron-up"></i></a>
-                    </li>
-                    <li class="dropdown">
-                      <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-wrench"></i></a>
-                      <ul class="dropdown-menu" role="menu">
-                        <li><a href="#">Settings 1</a>
-                        </li>
-                        <li><a href="#">Settings 2</a>
-                        </li>
-                      </ul>
-                    </li>
-                    <li><a class="close-link"><i class="fa fa-close"></i></a>
-                    </li>
-                  </ul>
-                  <div class="clearfix"></div>
-                </div>
-                <div class="x_content">
-                  <h4>Cpu</h4>
-                  <canvas id="lineChartCpu"></canvas>
-                </div>
-              </div>
-            </div>
 
 
 </body>
