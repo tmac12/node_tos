@@ -53,11 +53,11 @@
         });
 
         socket.on('cpu', function(cpu) {
-          console.log(cpu[0]);
+          console.log(cpu);
           if(!isEmpty(lineChartCpu.data.datasets[0])){
-            //lineChartCpu.data.datasets[0].data.shift(); //elimino il primo elemento del dataset
-            //lineChartCpu.data.datasets[0].data.push(cpu[0]);
-            //lineChartCpu.update();
+            lineChartCpu.data.datasets[0].data.shift(); //remove first element of dataset
+            lineChartCpu.data.datasets[0].data.push(cpu);
+            lineChartCpu.update();
           }
           else{
             console.log('obj null');

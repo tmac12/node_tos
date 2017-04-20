@@ -1,6 +1,5 @@
 var express = require('express');
 //global.jQuery = global.$ = require('jquery'); 
-//require('bootstrap');
 var app = express();
 var http = require('http');
 
@@ -54,8 +53,9 @@ var CheckCpuStatus = function(){
 
   timerCheckCpu = setTimeout(function(){CheckCpuStatus();}, intervalCheckCpu_ms);
   _cpu.getCpuLoad(io);
-  
+
 }
 
 
 CheckCpuStatus();
+

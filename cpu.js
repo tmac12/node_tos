@@ -1,5 +1,6 @@
 const os = require('os');
 var cpuWin = require('windows-cpu');
+var si = require('systeminformation');
 
 function getCpuLoad(io){
     var currOs = os.platform();
@@ -21,14 +22,13 @@ function getCpuLoad(io){
     }
     else{
         //linux or other
-        var cpuLoad = os.loadavg();
-        io.emit('cpu', cpuLoad);
+        // callback style
+        si.currentLoad(function(data) {
+            io.emit('cpu', data.currentload);
+        })
     }
 }
 
-
-
-//module.exports = exports = plugin
 
 module.exports = {
     getCpuLoad: getCpuLoad
